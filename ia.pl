@@ -22,7 +22,12 @@
 			  ,ennemiTest/1
 			  ,iaAlphabeta/8
 			  ,poidsAlignementNew/1
-			  ,poidsBlocageNew/1]
+			  ,poidsBlocageNew/1
+			  ,poidsDefensif/1
+			  ,poidsOffensif/1
+			  ,poidsCaseTableau/1
+			  ,poidsPiegeSept/1
+			  ,poidsOpening/1]
 ).
 
 %%%%%%%%%%%%%%%%
@@ -48,6 +53,13 @@
 :- dynamic poidsBlocageNew/1.
 :- dynamic ennemiTest/1.
 :- dynamic initDepth/1.
+
+%New weights
+:- dynamic poidsDefensif/1.
+:- dynamic poidsOffensif/1.
+:- dynamic poidsCaseTableau/1.
+:- dynamic poidsPiegeSept/1.
+:- dynamic poidsOpening/1.
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %% Prédicats publics %%
@@ -78,12 +90,12 @@ iaMinimax(JoueurCourant,Coup,Profondeur,PoidsPosition,PoidsAlignement,PoidsBloca
 	retract(ennemiTest(AutreJoueur)),
 	retractall(caseTest(_,_,_)).
 
-iaAlphabeta(JoueurCourant,Coup,Profondeur,PoidsPosition,PoidsAlignement,PoidsBlocage,PoidsAlignementNew,PoidsBlocageNew) :-
-	assert(poidsPosition(PoidsPosition)),
-	assert(poidsAlignement(PoidsAlignement)),
-	assert(poidsBlocage(PoidsBlocage)),
-	assert(poidsAlignementNew(PoidsAlignementNew)),
-	assert(poidsBlocageNew(PoidsBlocageNew)),
+iaAlphabeta(JoueurCourant,Coup,Profondeur,PoidsCaseTableau,PoidsDefensif,PoidsOffensif,PoidsPiege,PoidsOpening) :-
+	assert(poidsDefensif(PoidsCaseTableau)),
+	assert(poidsOffensif(PoidsDefensif)),
+	assert(poidsCaseTableau(PoidsOffensif)),
+	assert(poidsPiegeSept(PoidsPiege)),
+	assert(poidsOpening(PoidsOpening)),
 	assert(initDepth(Profondeur)),
 	initCaseTest,
 	ennemi(JoueurCourant,AutreJoueur),
