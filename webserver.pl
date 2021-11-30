@@ -1,14 +1,19 @@
-﻿% - Emmanuel GARREAU
-% - Mathis GOICHON
-% - Yanis MANSOUR
-% - Bérenger MAYOUD--DUPIN
-% - Paul SOUTEYRAT
-% - Timothé VERSTRAETE
+﻿/************* 
+ * INSA Lyon - Département informatique - 4IF
+ * Hexanôme : H4412
+ * Rahim BELATECHE
+ * Matheus DE BARROS SILVA
+ * Benoit DELEGLISE
+ * Allan GUIGAL
+ * Alexis METWALLI
+ * Matthieu ROUX
+ * Mathieu SAUGIER
+ ******************/
 
 %%%%%%%%%%%% webserver.pl %%%%%%%%%%%%
 
 %%% Ancien code basé sur la source : https://github.com/SIGSWAG/PrologPuissance4 %%%
-%%% Modification légère pour intégrer l'appel des nouvelles IA %%%
+%%% Ajout à l'interface des nouvelles IA %%%
 
 % Serveur web permettant d'interfacer Prolog avec notre IHM web.
 
@@ -26,7 +31,6 @@
 :- use_module(library(http/json_convert)).
 :- use_module(jeu).
 :- use_module(ia).
-:- use_module(eval).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%

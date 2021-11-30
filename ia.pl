@@ -1,28 +1,31 @@
-﻿% - Emmanuel GARREAU
-% - Mathis GOICHON
-% - Yanis MANSOUR
-% - Bérenger MAYOUD--DUPIN
-% - Paul SOUTEYRAT
-% - Timothé VERSTRAETE
+﻿/************* 
+ * INSA Lyon - Département informatique - 4IF
+ * Hexanôme : H4412
+ * Rahim BELATECHE
+ * Matheus DE BARROS SILVA
+ * Benoit DELEGLISE
+ * Allan GUIGAL
+ * Alexis METWALLI
+ * Matthieu ROUX
+ * Mathieu SAUGIER
+ ******************/
 
 %%%%%%%%%%%% ia.pl %%%%%%%%%%%%
 
 %%% Code permettant d'appeler les différentes IA %%% 
+%%% iaMinimaxOld impémente l'algo du même nom. Il est issu de la source : https://github.com/SIGSWAG/PrologPuissance4. Nous n'y avons apporté aucune modification.
+%%% iaAlphabeta implémente un alpha beta pruning. Il a été développé dans la source : https://github.com/SIGSWAG/PrologPuissance4. Nous y avons simplement ajouté nos heuristics
+
 
 :- module(ia, [iaAleatoire/1
-			  ,iaMinimax/6
 			  ,iaMinimaxOld/7
 			  ,poidsPuissance3/1
 			  ,poidsPosition/1
 			  ,poidsDensite/1
-			  ,poidsAlignement/1
-			  ,poidsBlocage/1
 			  ,poidsAdjacence/1
 			  ,initDepth/1
 			  ,ennemiTest/1
 			  ,iaAlphabeta/9
-			  ,poidsAlignementNew/1
-			  ,poidsBlocageNew/1
 			  ,poidsDefensif/1
 			  ,poidsOffensif/1
 			  ,poidsCaseTableau/1
@@ -48,14 +51,10 @@
 :- dynamic poidsPosition/1.
 :- dynamic poidsDensite/1.
 :- dynamic poidsAdjacence/1.
-:- dynamic poidsAlignement/1.
-:- dynamic poidsBlocage/1.
-:- dynamic poidsAlignementNew/1.
-:- dynamic poidsBlocageNew/1.
 :- dynamic ennemiTest/1.
 :- dynamic initDepth/1.
 
-%New weights
+%Nouveau poids utilisés pour les nouvelles heuristics
 :- dynamic poidsDefensif/1.
 :- dynamic poidsOffensif/1.
 :- dynamic poidsCaseTableau/1.
@@ -80,18 +79,9 @@ get_best((Move,_), Move).
 initCaseTest :- case(X,Y,Z), assert(caseTest(X,Y,Z)), false. %on assert une caseTest pour toutes les cases.
 initCaseTest.
 
-iaMinimax(JoueurCourant,Coup,Profondeur,PoidsPosition,PoidsAlignement,PoidsBlocage) :-
-	assert(poidsPosition(PoidsPosition)),
-	assert(poidsAlignement(PoidsAlignement)),
-	assert(poidsBlocage(PoidsBlocage)),
-	initCaseTest,
-	ennemi(JoueurCourant,AutreJoueur),
-	assert(ennemiTest(AutreJoueur)),
-	MaxMin is -1,
-	minimax(Profondeur,JoueurCourant,MaxMin,Coup,_),
-	retract(ennemiTest(AutreJoueur)),
-	retractall(caseTest(_,_,_)).
-
+/**
+ * iaAlphabeta implémente un alpha beta pruning. Il a été développé dans la source : https://github.com/SIGSWAG/PrologPuissance4. Nous y avons simplement ajouté nos heuristics
+ * */
 iaAlphabeta(JoueurCourant,Coup,Profondeur,PoidsCaseTableau,PoidsDefensif,PoidsOffensif,PoidsPiege,PoidsOpening, PoidsAdjacence) :-
 	assert(poidsDefensif(PoidsCaseTableau)),
 	assert(poidsOffensif(PoidsDefensif)),
@@ -111,6 +101,9 @@ iaAlphabeta(JoueurCourant,Coup,Profondeur,PoidsCaseTableau,PoidsDefensif,PoidsOf
 	retract(initDepth(Profondeur)),
 	retractall(caseTest(_,_,_)).
 
+/**
+ * iaMinimaxOld implémente l'algo du même nom. Il est issu de la source : https://github.com/SIGSWAG/PrologPuissance4. Nous n'y avons apporté aucune modification.
+ * */
 iaMinimaxOld(JoueurCourant,Coup,Profondeur,PoidsPosition,PoidsPuissance3,PoidsDensite,PoidsAdjacence) :-
 		assert(poidsPosition(PoidsPosition)),
 		assert(poidsPuissance3(PoidsPuissance3)),

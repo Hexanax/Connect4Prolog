@@ -1,13 +1,22 @@
-% - Emmanuel GARREAU
-% - Mathis GOICHON
-% - Yanis MANSOUR
-% - Bérenger MAYOUD--DUPIN
-% - Paul SOUTEYRAT
-% - Timothé VERSTRAETE
+/************* 
+ * INSA Lyon - Département informatique - 4IF
+ * Hexanôme : H4412
+ * Rahim BELATECHE
+ * Matheus DE BARROS SILVA
+ * Benoit DELEGLISE
+ * Allan GUIGAL
+ * Alexis METWALLI
+ * Matthieu ROUX
+ * Mathieu SAUGIER
+ ******************/
 
-%%%%%%%%%%%% minimaxdraw.pl %%%%%%%%%%%%
+%%%%%%%%%%%% alphaBetaDraw.pl %%%%%%%%%%%%
 
-%%% Code implémentant les algorithmes minimax et élagage alpha beta 
+%%% Code implémentant les algorithmes minimax et élagage alpha beta réalisé dans la source : https://github.com/PeredurOmega/PrologPuissance4
+%%% Code implémentant les heuristics que nous avons développé
+%%% Une version de notre tentative d'implémentation de l'algorithme alpha beta est également disponible. Il est basé sur le code : https://github.com/PascalPons/connect4/blob/part4/solver.cpp
+%%% et : https://ai.ia.agh.edu.pl/pl:prolog:pllib:minimax_move
+
 
 :- module(alphaBetaDraw, [
 	caseTest/3,
@@ -17,12 +26,15 @@
  	alpha_beta/7
 ]).
 
-:- use_module(eval).
 :- use_module(jeu).
 :- use_module(util).
 
 :- dynamic caseTest/3.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     Alpha beta     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ponderate(MaxMin, 0, Value, Value1) :- 
 	MaxMin < 0,
 	Value1 is Value * MaxMin,!.
@@ -33,11 +45,6 @@ ponderate(MaxMin, 0, Value, Value) :-
 ponderate(MaxMin, Depth, Value, Value1) :- 
 	Depth > 0,
 	Value1 is -Value.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     Alpha beta     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 evaluate_and_choose_ab([Move|Moves], InitPlayer, Depth, Alpha, Beta, Record, BestMove, MaxMin) :-
 	move(Move, MaxMin, InitPlayer),
@@ -167,8 +174,8 @@ value(InitPlayer, V) :-
 	V is Score.
 
 
-%%%%%% DELIMITER
-
+%%%%%% Notre version du alphaBeta
+/*
 alphaBeta(0,CouleurJoueur,Alpha,Beta , Move, Value,Maximizer):- 
     evaluate(CouleurJoueur, Value, Move), !.
 
@@ -197,7 +204,7 @@ evaluate_and_choose([Move|Moves],CouleurJoueur,Profondeur,Alpha,Beta,Record,Best
     Beta1 is -Alpha,
     alphaBeta(Profondeur,CouleurJoueurSuivant,Alpha1,Beta1,MoveX,Value, Maximizer),
     undoMove(Move, Ligne, CouleurJoueur),
-    Value1 is -Value,  % ici je sais pas si il faut faire fois -1 ou pas je te laisse test
+    Value1 is Value * -1,
     cutoff(Move,Value1,Profondeur,Alpha,Beta,Moves,CouleurJoueur,Record,BestMove, Maximizer).
 
 evaluate_and_choose([],CouleurJoueur,Profondeur,Alpha,Beta,Move,(Move,Alpha),Maximizer).
@@ -234,11 +241,13 @@ undoMove(Move, Ligne, CouleurJoueur):-
 
 evaluate(CouleurJoueur, Value, Move):- 
     eval(CouleurJoueur, Score, Move),
-    Value is Score.
+    Value is Score.*/
 
-%Move is the X position to be played
+% eval/2(+CouleurJoueur, -Score)
+% Evalue le plateau en attribuant au joueur courant un score évalué à partir d'heuristics.
+% Cela permet d'évaluer la qualité des coups joués.
 eval(CouleurJoueur, Score):- 
-    %%%%%% Call heuristics %%%%%%
+    %Active l'heuristic si le poids est >=1
     poidsCaseTableau(PoidsCaseTableau),
     poidsDefensif(PoidsDefensif),
     poidsOffensif(PoidsOffensif),
@@ -251,7 +260,7 @@ eval(CouleurJoueur, Score):-
     piege7IA(CouleurJoueur, ScorePiege, PoidsPiege),
     piegeAdjacence(CouleurJoueur, ScoreAdjacence, PoidsAdjacence),
     opening(CouleurJoueur, ScoreOpening, PoidsOpening),
-    random_between(0, 0, Perturbation),
+    random_between(-5, 5, Perturbation),
     ScoreFinal is ScoreDefensif * PoidsDefensif
             + ScorePosition * PoidsCaseTableau
             + ScoreOffensif * PoidsOffensif
@@ -260,6 +269,8 @@ eval(CouleurJoueur, Score):-
             + ScoreAdjacence * PoidsAdjacence,
     Score is ScoreFinal * (1 + Perturbation/100).
 
+% writefacts/2(+X, -Score)
+% Permet d'ecrire des informations dans un fichier texte pour le debuggage
 writefacts(X, Score):-
     open('evals.txt',append,Out),
     write(Out, X),
@@ -268,24 +279,6 @@ writefacts(X, Score):-
     write(Out, '\n'),
     close(Out).
 
-%Forces the AI to play on the 2nd column because it gives a huge score to do so
-forceColumnMove(CouleurJoueur, Score):-
-    (caseTest(3, 6, _);
-    caseTest(3, 5, _);
-    caseTest(3, 4, _);
-    caseTest(3, 3, _);
-    caseTest(3, 2, _);
-    caseTest(3, 1, _)),
-    Score is 1000.
-
-%Always a valid score of 0 if not true
-forceColumnMove(_, 0).
-
-dummyVictoire(CouleurJoueur, Score):-
-    (caseTest(3, 1, _)),
-    Score is 1000.
-
-dummyVictoire(_, 0).
 
 %%%%% placerJeton %%%%%
 % coupValide/1(-Colonne)
@@ -306,22 +299,28 @@ insererJeton(X,Y,C) :- calculPositionJeton(X, 1, Y), assert(caseTest(X,Y,C)).
 calculPositionJeton(X,YCheck,YCheck) :- caseVideTest(X,YCheck), !.
 calculPositionJeton(X,YCheck,Y) :- incr(YCheck, YCheck1), calculPositionJeton(X,YCheck1,Y).
 
-%%%%%%%%%%% Commentaire heuristique de défense
+/****************************************************************
+                    HEURISTIQUES D'ALIGNEMENT 
+                    DEFENSIVE ET OFFENSIVES 
 
+Evaluent pour chaque pion son intégration dans un alignement de plusieurs pions 
+en ligne, en colonne ou en diagonale et attribuent un score. 
+Plus il y a d'alignement et plus il y a de chance de réalisé un puissance4.
+On a donc 3 facteurs d'alignement : 2 pions, 3pions et 4. 
+L'heuristique de défense cherche donc à minimiser le score des alignements adverse.
+L'heuristique de offensive cherche donc à maximiser le score des alignements courant.
 
+*****************************************************************/
 
-
-
-
-
-
-%%%%%%%%%%%
-
+%% Donne la couleur inverse à celle du joueur courant
 couleurAdverse(jaune, rouge).
 couleurAdverse(rouge, jaune).
 
 %%%%%%%%%%%
 
+% defensiveIA/3(+CouleurJoueur,-ScoreDefensif,+PoidsDefensif)
+% Donne une note d'autant plus forte que l'alignement du joueur 
+% adverse est dangereux
 defensiveIA(CouleurJoueur, ScoreDefensif, PoidsDefensif):- 
     PoidsDefensif > 0,
     findall(S, evalDangerAdverse(CouleurJoueur, S),Scores),
@@ -329,6 +328,9 @@ defensiveIA(CouleurJoueur, ScoreDefensif, PoidsDefensif):-
     ScoreDefensif is ScoreDefensifTot.
 defensiveIA(_, 0, _).
 
+% offensiveIA/3(+CouleurJoueur,-ScoreOffensif,+PoidsOffensif)
+% Donne une note d'autant plus forte que l'alignement du joueur 
+% courant est avantageux
 offensiveIA(CouleurJoueur, ScoreOffensif, PoidsOffensif):- 
     PoidsOffensif > 0,
     findall(S, evalDangerJoueur(CouleurJoueur, S),Scores),
@@ -336,17 +338,23 @@ offensiveIA(CouleurJoueur, ScoreOffensif, PoidsOffensif):-
     ScoreOffensif is ScoreOffensiffTot.
 offensiveIA(_, 0, _).
 
+% evalDangerAdverse/2(+CouleurJoueur,-Score)
+% Donne le score d'évaluation d'alignement d'un pion adverse
 evalDangerAdverse(CouleurJoueur, Score) :-
     couleurAdverse(CouleurJoueur, JoueurAdverse),
     caseTest(X,Y,JoueurAdverse),
     calculerScoreAlignement(X, Y, JoueurAdverse, S),
     Score is S * -1.
 
+% evalDangerJoueur/2(+CouleurJoueur,-Score)
+% Donne le score d'évaluation d'alignement d'un pion du joueur courant
 evalDangerJoueur(CouleurJoueur, Score) :-
     caseTest(X,Y,CouleurJoueur),
     calculerScoreAlignement(X, Y, JoueurAdverse, S),
     Score is S.
 
+% evalDangerJoueur/2(+X,+Y,+CouleurJoueur,-Score)
+% Calcul le score d'alignement d'un pion dans toute les directions 
 calculerScoreAlignement(X,Y, CouleurJoueur, Score ):-
     evaluerLigne(X,Y,CouleurJoueur,LigneGauche1, LigneGauche2, LigneGauche3, LigneDroite1, LigneDroite2, LigneDroite3),
     evaluerColonne(X,Y,CouleurJoueur,ColonneGauche1, ColonneGauche2, ColonneGauche3, ColonneDroite1, ColonneDroite2, ColonneDroite3),
@@ -377,6 +385,12 @@ calculerScoreAlignement(X,Y, CouleurJoueur, Score ):-
             + LigneScore2 + ColonneScore2 + Diag1Score2 + Diag2Score2.
 
 
+/******************************************/
+%         Liste des configurations         %
+%         qui augmentent le score :        %
+%le pion étudié peut être n'importe quel x %
+/******************************************/
+%%Configuration victorieuse
 %x,x,x,x%
 align4Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
     (  
@@ -386,6 +400,7 @@ align4Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
         1+Gauche1+Gauche2+Gauche3 >= 4,Score is 1000,!);
     (Score is 0).
 
+%%Configuration : 
 %_,x,x,x%
 align3Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, _, Score):-
     (  
@@ -394,6 +409,7 @@ align3Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, _, Score):-
         Gauche1==1, Gauche2==1, Gauche3==0, Score is 100);
     (Score is 0).
 
+%%Configuration : 
 %x,_,x,x%
 align3Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
     (  
@@ -402,6 +418,7 @@ align3Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
         Gauche1==1, Gauche2==0, Gauche3==1, Score is 100);
     (Score is 0).    
 
+%%Configuration : 
 %x,x,_,x%
 align3Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
     (  
@@ -410,6 +427,7 @@ align3Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
         Gauche1==0, Gauche2==1, Gauche3==1, Score is 100);
     (Score is 0).
 
+%%Configuration : 
 %x,x,x,_%
 align3Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
     (  
@@ -418,6 +436,7 @@ align3Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
         Gauche1==1, Gauche2==1, Droite1==0, Score is 100);
     (Score is 0).    
 
+%%Configuration : 
 %_,_,x,x%
 align2Pions(Gauche1, Gauche2, Gauche3, Droite1, _, _, Score):-
     (  
@@ -425,6 +444,7 @@ align2Pions(Gauche1, Gauche2, Gauche3, Droite1, _, _, Score):-
         Gauche1==1, Gauche2==0, Gauche3==0, Score is 10);
     (Score is 0).    
   
+%%Configuration :   
 %_,x,_,x%
 align2Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, _, Score):-
     (  
@@ -432,6 +452,7 @@ align2Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, _, Score):-
         Gauche1==0, Gauche2==1, Gauche3==0, Score is 10);
     (Score is 0).    
 
+%%Configuration : 
 %_,x,x,_%
 align2Pions(Gauche1, Gauche2, _, Droite1, Droite2, _, Score):-
     (  
@@ -439,6 +460,7 @@ align2Pions(Gauche1, Gauche2, _, Droite1, Droite2, _, Score):-
         Gauche1==1, Gauche2==0, Droite1==0, Score is 10);
     (Score is 0).
  
+%%Configuration : 
 %x,_,_,x%
 align2Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
     (  
@@ -446,24 +468,33 @@ align2Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
         Gauche1==0, Gauche2==0, Gauche3==1, Score is 10);
     (Score is 0).
 
+%%Configuration : 
 %x,_,x,_%
 align2Pions(Gauche1, Gauche2, _, Droite1, Droite2, Droite3, Score):-
     (  
         Droite1==0, Droite2==1, Droite3==0, Score is 10;
         Gauche1==0, Gauche2==1, Droite1==0, Score is 10);
     (Score is 0).  
-   
+
+%%Configuration :    
 %x,x,_,_%
 align2Pions(Gauche1, _, _, Droite1, Droite2, Droite3, Score):-
     (  
         Droite1==1, Droite2==0, Droite3==0, Score is 10;
         Gauche1==1, Droite1==0, Droite2==0, Score is 10);
     (Score is 0).  
-  
+
+% evaluerLigne(+X,+Y,+Joueur,-Gauche1,-Gauche2,-Gauche3,-Droite1,-Droite2,-Droite3)
+% Permet de déterminer l'état des 3 cases à droite et à gauche d'un pion en ligne.
+% Inspiré des méthodes réalisé dans le projet d'origine : https://github.com/SIGSWAG/PrologPuissance4
+% 1 si occupé par le joueur en paramètre
+% 0 si vide c
+% -1 sinon
 evaluerLigne(X,Y,Joueur,Gauche1,Gauche2,Gauche3,Droite1, Droite2, Droite3) :-
     verifierGaucheLigne(X,Y,Joueur,Gauche1,Gauche2,Gauche3),
     verifierDroiteLigne(X,Y,Joueur,Droite1,Droite2,Droite3).
 
+%cases à droite
 verifierDroiteLigne(X,Y,Joueur,Droite1,Droite2,Droite3):-
     incr(X,X1),
     incr(X1,X2),
@@ -478,6 +509,7 @@ verifierDroiteLigne(X,Y,Joueur,Droite1,Droite2,Droite3):-
      X3 =< 7, not(caseTest(X3,Y,_)), Droite3 is 0,!;
      Droite3 is -1).
 
+%cases à gauche
 verifierGaucheLigne(X,Y,Joueur,Gauche1,Gauche2,Gauche3):-
     decr(X,X1),
     decr(X1,X2),
@@ -492,10 +524,17 @@ verifierGaucheLigne(X,Y,Joueur,Gauche1,Gauche2,Gauche3):-
      X3 >=1 , not(caseTest(X3,Y,_)), Gauche3 is 0,!;
      Gauche3 is -1).
 
+% evaluerColonne(+X,+Y,+Joueur,-Gauche1,-Gauche2,-Gauche3,-Droite1,-Droite2,-Droite3)
+% Permet de déterminer l'état des 3 cases en haut et en bas d'un pion en colonne.
+% Inspiré des méthodes réalisé dans le projet d'origine : https://github.com/SIGSWAG/PrologPuissance4
+% 1 si occupé par le joueur en paramètre
+% 0 si vide c
+% -1 sinon
 evaluerColonne(X,Y,Joueur,Gauche1,Gauche2,Gauche3,Droite1, Droite2, Droite3) :-
     verifierGaucheColonne(X,Y,Joueur,Gauche1,Gauche2,Gauche3),
     verifierDroiteColonne(X,Y,Joueur,Droite1,Droite2,Droite3).
 
+%cases en haut
 verifierDroiteColonne(X,Y,Joueur,Droite1,Droite2,Droite3):-
     incr(Y,Y1),
     incr(Y1,Y2),
@@ -510,6 +549,7 @@ verifierDroiteColonne(X,Y,Joueur,Droite1,Droite2,Droite3):-
      Y3 =< 6, not(caseTest(X,Y3,_)), Droite3 is 0,!;
      Droite3 is -1).
 
+%cases en bas
 verifierGaucheColonne(X,Y,Joueur,Gauche1,Gauche2,Gauche3):-
     decr(Y,Y1),
     decr(Y1,Y2),
@@ -524,10 +564,17 @@ verifierGaucheColonne(X,Y,Joueur,Gauche1,Gauche2,Gauche3):-
      Y3 >=1 , not(caseTest(X,Y3,_)), Gauche3 is 0,!;
      Gauche3 is -1).
 
+% evaluerColonne(+X,+Y,+Joueur,-Gauche1,-Gauche2,-Gauche3,-Droite1,-Droite2,-Droite3)
+% Permet de déterminer l'état des 3 cases en haut à droite et en bas à gauche d'un pion (la diagonale 1 du plateau).
+% Inspiré des méthodes réalisé dans le projet d'origine : https://github.com/SIGSWAG/PrologPuissance4
+% 1 si occupé par le joueur en paramètre
+% 0 si vide c
+% -1 sinon
 evaluerDiag1(X,Y,Joueur,Gauche1,Gauche2,Gauche3,Droite1, Droite2, Droite3) :-
     verifierGaucheColonne(X,Y,Joueur,Gauche1,Gauche2,Gauche3),
     verifierDroiteColonne(X,Y,Joueur,Droite1,Droite2,Droite3).
 
+%cases en haut à droite
 verifierDroiteDiag1(X,Y,Joueur,Droite1,Droite2,Droite3):-
     incr(Y,Y1),
     incr(Y1,Y2),
@@ -545,6 +592,8 @@ verifierDroiteDiag1(X,Y,Joueur,Droite1,Droite2,Droite3):-
      Y3 =< 6, X3 =< 7, not(caseTest(X3,Y3,_)), Droite3 is 0,!;
      Droite3 is -1).
 
+
+%cases en bas à gauche
 verifierGaucheDiag1(X,Y,Joueur,Gauche1,Gauche2,Gauche3):-
     decr(Y,Y1),
     decr(Y1,Y2),
@@ -562,10 +611,17 @@ verifierGaucheDiag1(X,Y,Joueur,Gauche1,Gauche2,Gauche3):-
      Y3 >=1 ,X3 >= 1, not(caseTest(X3,Y3,_)), Gauche3 is 0,!;
      Gauche3 is -1).
 
+% evaluerColonne(+X,+Y,+Joueur,-Gauche1,-Gauche2,-Gauche3,-Droite1,-Droite2,-Droite3)
+% Permet de déterminer l'état des 3 cases en haut à gauche et en bas à droite d'un pion (la diagonale 2 du plateau).
+% Inspiré des méthodes réalisé dans le projet d'origine : https://github.com/SIGSWAG/PrologPuissance4
+% 1 si occupé par le joueur en paramètre
+% 0 si vide c
+% -1 sinon
 evaluerDiag2(X,Y,Joueur,Gauche1,Gauche2,Gauche3,Droite1, Droite2, Droite3) :-
     verifierGaucheColonne(X,Y,Joueur,Gauche1,Gauche2,Gauche3),
     verifierDroiteColonne(X,Y,Joueur,Droite1,Droite2,Droite3).
 
+%cases en bas à droite
 verifierDroiteDiag2(X,Y,Joueur,Droite1,Droite2,Droite3):-
     decr(Y,Y1),
     decr(Y1,Y2),
@@ -583,6 +639,7 @@ verifierDroiteDiag2(X,Y,Joueur,Droite1,Droite2,Droite3):-
      Y3 >=1 6, X3 =< 7, not(caseTest(X3,Y3,_)), Droite3 is 0,!;
      Droite3 is -1).
 
+%cases en haut à gauche
 verifierGaucheDiag2(X,Y,Joueur,Gauche1,Gauche2,Gauche3):-
     incr(Y,Y1),
     incr(Y1,Y2),
@@ -601,16 +658,22 @@ verifierGaucheDiag2(X,Y,Joueur,Gauche1,Gauche2,Gauche3):-
      Droite3 is -1).
 
 
-%%%%% Heuristic d'état du plateau %%%%%%%%%
-/*
-3	4	5	7	5	4	3
-4	6	8	10	8	6	4
-5	8	11	13	11	8	5
-5	8	11	13	11	8	5
-4	6	8	10	8	6	4
-3	4	5	7	5	4	3
-*/
 
+/****************************************************************
+                    HEURISTIQUES DE POSITIONNEMENT 
+                    DES PIONS DANS LE PLATEAU
+
+Evaluent pour chaque pion sa position dans le plateau de jeu.
+Les positions centrales sont plus avantageuses et apportent donc plus de
+points. Les scores des pions adverses sont déduits du score des pions courant. 
+Heurirstique basé sur les sites : https://www.christian-schmidt.fr/puissance4
+et https://www.researchgate.net/publication/331552609_Research_on_Different_Heuristics_for_Minimax_Algorithm_Insight_from_Connect-4_Game
+
+*****************************************************************/
+
+% positionIA/3(+CouleurJoueur,-ScorePosition,+PoidsCaseTableau)
+% Donne une note d'autant plus forte que le positionnement des pions 
+% du joueur est central.
 positionIA(CouleurJoueur, ScorePosition, PoidsCaseTableau):- 
     PoidsCaseTableau > 0,
     findall(S, calculerScorePlateau(CouleurJoueur, S),Scores),
@@ -621,12 +684,22 @@ positionIA(CouleurJoueur, ScorePosition, PoidsCaseTableau):-
     ScorePosition is ScoreDefensifTotJoueur - ScoreDefensifTotAdverse.
 positionIA(_, 0, _).
 
-
+% calculerScorePlateau(+CouleurJoueur, -Score)
+% Donne une note en fonction de la position d'un pion.
 calculerScorePlateau(CouleurJoueur, Score):-
     caseTest(X,Y, CouleurJoueur),
     valeurCasePlateau(X,Y,S),
     Score is S.
 
+/* 
+Les scores donnés par défaut pour les cases sont :
+        3	4	5	7	5	4	3
+        4	6	8	10	8	6	4
+        5	8	11	13	11	8	5
+        5	8	11	13	11	8	5
+        4	6	8	10	8	6	4
+        3	4	5	7	5	4	3
+                                                        */
 valeurCasePlateau(1,1,3).
 valeurCasePlateau(2,1,4). 
 valeurCasePlateau(3,1,5). 
@@ -676,13 +749,21 @@ valeurCasePlateau(6,6,4).
 valeurCasePlateau(7,6,3). 
 
 
-/*
-Heuristic du tricks du 7 ***
-                           *
-                          * 
-*/
+/****************************************************************
+                    HEURISTIQUES BASEE SUR LE PIEGE 
+                    DE FAIRE DES 7
 
+Evaluent pour chaque pion s'il est à l'intersection de 2 pions en ligne ou 
+en colonne avec 2 pions en diagonale pour le joueur courant. 
+Cela permet de former un 7 qui permet de tendre un piège à l'adversaire en 
+donnant la possibilité de gagner en plusieurs points
+On estime qu'un 7 selon son orientation est plus ou moins avantageux
 
+*****************************************************************/
+
+% piege7IA/3(+CouleurJoueur,-ScorePiege,+PoidsPiege)
+% Donne une note d'autant plus forte que le positionnement des pions 
+% forme des 7
 piege7IA(CouleurJoueur, ScorePiege, PoidsPiege):-
     PoidsPiege > 0,
     findall(S, evalPiege(CouleurJoueur, S),Scores),
@@ -690,6 +771,8 @@ piege7IA(CouleurJoueur, ScorePiege, PoidsPiege):-
     ScorePiege is ScorePiegeTot.
 piege7IA(_, 0, _).    
 
+% evalPiege/2(+CouleurJoueur,-Score)
+% évalue si un plan est au centre d'un 7
 evalPiege(CouleurJoueur, Score) :-
     caseTest(X,Y,CouleurJoueur),
     calculerScorePiege(X, Y, CouleurJoueur, S),
@@ -721,20 +804,52 @@ calculerScorePiege(X, Y, CouleurJoueur, Score) :-
             + ScoreMoyen3 + ScoreMoyen4.
 
 
+%% Scores associés à chaque 7 :
+% Les bons 7 :
+/*
+    ***  ***
+     *    *
+    *      *
+*/
 piege7BonPositionnement(5, 250).
 piege7BonPositionnement(4,125).   
 piege7BonPositionnement(_, 0). 
+% Les moyens 7 :
+/*
+    *  *  *        *   *  *
+    * *   * *    * *    * * 
+    *     *  *  *  *      *
+*/
 piege7MoyenPositionnement(5,150).
 piege7MoyenPositionnement(4,75).
 piege7MoyenPositionnement(_,0).
+% Les mauvais 7 :
+/*
+    *      *
+     *    *
+    ***  ***
+*/
 piege7BasPositionnement(5,100).
 piege7BasPositionnement(4,50).
 piege7BasPositionnement(_,0).
 
 
-/* Evaluation de l'opening 
-*/
+/****************************************************************
+                    HEURISTIQUES D'EVALUATION 
+                    DE L'OPENING
 
+Evalue la qualité du premier cout de chaque joueur.
+Le puissance 4 étant un jeu résolu, il a été montré que pour les joueurs
+n'effectuants aucune erreur le premier pion permettait de déterminer directement 
+l'issue de la partie.
+Sources : https://connect4.gamesolver.org/fr/ et https://www.youtube.com/watch?v=yDWPi1pZ0Po
+
+*****************************************************************/
+
+
+% opening(+CouleurJoueur, -ScoreOpening,+ PoidsOpening)
+% Donne une note d'autant plus forte que l'opening du joueur courant est bon 
+% par-rapport à celui de son adversaire
 opening(CouleurJoueur, ScoreOpening, PoidsOpening) :- 
     PoidsOpening > 0,
     couleurAdverse(CouleurJoueur, JoueurAdverse),
@@ -745,6 +860,10 @@ opening(CouleurJoueur, ScoreOpening, PoidsOpening) :-
     ScoreOpening is ScoreJoueur - ScoreJoueurAdverse,! .
 opening(_, 0, _).    
 
+% Le rouge est le premier à joueur.
+% S'il joue parfaitement et son adversaire aussi,
+% son premier coup dans la colonne 4 lui assure la victoire
+% la colonne 3 et 5 le nul et le reste la défaite
 evaluerOpening(X, rouge, Score):- 
     (X == 1, Score is -1000, !;
      X == 2, Score is -1000, !;
@@ -754,6 +873,11 @@ evaluerOpening(X, rouge, Score):-
      X == 6, Score is -1000, !;
      X == 7, Score is -1000, !;   
         Score is 0).
+
+% Le jaune est le second à joueur.
+% S'il joue parfaitement et son adversaire aussi,
+% les colonnes 3,4 et 5 permettent d'amortir les dégats
+% le reste lui assure la défaite
 evaluerOpening(X, jaune, Score):- 
     (X == 1, Score is -1000, !;
      X == 2, Score is -1000, !;
@@ -764,15 +888,22 @@ evaluerOpening(X, jaune, Score):-
      X == 7, Score is -1000, !;   
         Score is 0).
 
-
 /****************************************************************
- * 
- * Evaluation de l'adjacence
- * 
- * 
- * 
- * *********************/    
+                    HEURISTIQUES D'EVALUATION 
+                    DE L'ADJACENCE
 
+Evalue le nombre de possibilité disponible sur une ligne pour un joueur 
+Cela peremt comme le piège du 7 de mettre en place un situation ou le joueur 
+puet gagner à 2 endroits différents
+Le score donnée à l'adjacence est d'autant plus important que les colonnes libres disponibles
+sont de part et d'autre d'un alignement de pions important.
+Source utilisée : https://www.researchgate.net/publication/331552609_Research_on_Different_Heuristics_for_Minimax_Algorithm_Insight_from_Connect-4_Game
+
+*****************************************************************/
+
+% piegeAdjacence(+CouleurJoueur, -ScoreAdjacence, +PoidsAdjacence)
+% Donne une note d'autant plus forte les 2 colonnes autour d'un alignement de pions 
+% du joueur son libre alors que celles de son adversaire sont occupée.
 piegeAdjacence(CouleurJoueur, ScoreAdjacence, PoidsAdjacence) :- 
     PoidsAdjacence > 0,
     couleurAdverse(CouleurJoueur, JoueurAdverse),
@@ -783,13 +914,15 @@ piegeAdjacence(CouleurJoueur, ScoreAdjacence, PoidsAdjacence) :-
     ScoreAdjacence is (ScoresJoueur - (2 * ScoresAdverse)).
 piegeAdjacence(_, 0, _).  
 
-
+% evaluerAdjacence/2(+CouleurJoueur,-ScoreJoueur)
+% Donne le score d'évaluation d'adjacence d'un pion 
 evaluerAdjacence(CouleurJoueur, ScoreJoueur):-
     caseTest(X,Y,CouleurJoueur),
     calculerScoreAlignement(X, Y, CouleurJoueur, S),
     ScoreJoueur is S.  
   
-
+% calculerScoreAjacence/2(+X,+Y,+CouleurJoueur,-Score)
+% Calcul le score d'alignement d'un pion sur une ligne
 calculerScoreAjacence(X,Y, CouleurJoueur, Score ):-
     evaluerLigne(X,Y,CouleurJoueur,LigneGauche1, LigneGauche2, LigneGauche3, LigneDroite1, LigneDroite2, LigneDroite3),
     adjacence3(LigneGauche1, LigneGauche2, LigneGauche3, LigneDroite1, LigneDroite2, LigneDroite3, Score1),
@@ -797,6 +930,13 @@ calculerScoreAjacence(X,Y, CouleurJoueur, Score ):-
     adjacence1(LigneGauche1, LigneDroite1, Score3),
     Score is Score1 + Score2 + Score3.
 
+
+/******************************************/
+%         Liste des configurations         %
+%         qui augmentent le score :        %
+%le pion étudié peut être n'importe quel x %
+/******************************************/
+%Configuration avec adjacence et alignement de 3 pions
 %_,x,x,x,_%
 adjacence3(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
     (  
@@ -805,7 +945,7 @@ adjacence3(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
         Gauche1==1, Gauche2==1, Gauche3==0, Droite1==0, Score is 1000);
     (Score is 0). 
 
-
+%Configuration avec adjacence et alignement de 2 pions
 %_,x,x,_%
 adjacence2(Gauche1, Gauche2 , Droite1, Droite2 , Score):-
     (  
@@ -814,6 +954,7 @@ adjacence2(Gauche1, Gauche2 , Droite1, Droite2 , Score):-
         );
     (Score is 0).     
 
+%Configuration avec adjacence et alignement d'un pion
 %_,x,_%
 adjacence1(Gauche1, Droite1, Score):-
     (  
