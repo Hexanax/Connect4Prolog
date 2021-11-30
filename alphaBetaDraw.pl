@@ -244,20 +244,21 @@ eval(CouleurJoueur, Score):-
     poidsOffensif(PoidsOffensif),
     poidsPiegeSept(PoidsPiege),
     poidsOpening(PoidsOpening),
+    poidsPiegeAdjacence(PoidsAdjacence),
     defensiveIA(CouleurJoueur, ScoreDefensif, PoidsDefensif),
     offensiveIA(CouleurJoueur, ScoreOffensif, PoidsOffensif),
     positionIA(CouleurJoueur, ScorePosition, PoidsCaseTableau),
     piege7IA(CouleurJoueur, ScorePiege, PoidsPiege),
+    piegeAdjacence(CouleurJoueur, ScoreAdjacence, PoidsAdjacence),
     opening(CouleurJoueur, ScoreOpening, PoidsOpening),
-    forceColumnMove(CouleurJoueur, ScoreVictoire),
     random_between(0, 0, Perturbation),
-	writefacts(1, 1),
-    Score is ScoreDefensif * PoidsDefensif
-            %+ ScorePosition * PoidsCaseTableau
+    ScoreFinal is ScoreDefensif * PoidsDefensif
+            + ScorePosition * PoidsCaseTableau
             + ScoreOffensif * PoidsOffensif
-            %+ ScorePiege * PoidsPiege
-            %+ ScoreOpening * PoidsOpening
-			+ Perturbation.
+            + ScorePiege * PoidsPiege
+            + ScoreOpening * PoidsOpening
+            + ScoreAdjacence * PoidsAdjacence,
+    Score is ScoreFinal * (1 + Perturbation/100).
 
 writefacts(X, Score):-
     open('evals.txt',append,Out),
@@ -318,6 +319,8 @@ calculPositionJeton(X,YCheck,Y) :- incr(YCheck, YCheck1), calculPositionJeton(X,
 
 couleurAdverse(jaune, rouge).
 couleurAdverse(rouge, jaune).
+
+%%%%%%%%%%%
 
 defensiveIA(CouleurJoueur, ScoreDefensif, PoidsDefensif):- 
     PoidsDefensif > 0,
@@ -735,16 +738,14 @@ piege7BasPositionnement(_,0).
 opening(CouleurJoueur, ScoreOpening, PoidsOpening) :- 
     PoidsOpening > 0,
     couleurAdverse(CouleurJoueur, JoueurAdverse),
-    findall(Nb, compterCaseOccuper(CouleurJoueur,Nb), SommeJ), 
-    findall(NbAdverse, compterCaseOccuper(CouleurJoueur,NbAdverse), SommeA), 
-    sum(SommeA, SommeAdverse),
-    sum(SommeJ, SommeJoueur),
-    evaluerOpening(SommeJoueur, CouleurJoueur, SommeAdverse, JoueurAdverse, S),
-    ScoreOpening is S.
+    caseTest(X,1,CouleurJoueur), 
+    caseTest(X2,1,JoueurAdverse),
+    evaluerOpening(X, CouleurJoueur, ScoreJoueur),
+    evaluerOpening(X2, JoueurAdverse, ScoreJoueurAdverse),
+    ScoreOpening is ScoreJoueur - ScoreJoueurAdverse,! .
 opening(_, 0, _).    
 
-evaluerOpening(1, CouleurJoueur, 0, _, Score):- 
-    caseTest(X,_,CouleurJoueur),
+evaluerOpening(X, rouge, Score):- 
     (X == 1, Score is -1000, !;
      X == 2, Score is -1000, !;
      X == 3, Score is 0, !;
@@ -753,18 +754,69 @@ evaluerOpening(1, CouleurJoueur, 0, _, Score):-
      X == 6, Score is -1000, !;
      X == 7, Score is -1000, !;   
         Score is 0).
-evaluerOpening(1, CouleurJoueur, 1, _, Score):- 
-    caseTest(X,_,CouleurJoueur),
+evaluerOpening(X, jaune, Score):- 
     (X == 1, Score is -1000, !;
      X == 2, Score is -1000, !;
-     X == 3, Score is 0, !;
+     X == 3, Score is 500, !;
      X == 4, Score is 1000, !;
-     X == 5, Score is 0, !;
+     X == 5, Score is 500, !;
      X == 6, Score is -1000, !;
      X == 7, Score is -1000, !;   
-        Score is 0). 
-evaluerOpening(_, _, _, _,0).
+        Score is 0).
 
-compterCaseOccuper(CouleurJoueur, Somme):-
+
+/****************************************************************
+ * 
+ * Evaluation de l'adjacence
+ * 
+ * 
+ * 
+ * *********************/    
+
+piegeAdjacence(CouleurJoueur, ScoreAdjacence, PoidsAdjacence) :- 
+    PoidsAdjacence > 0,
+    couleurAdverse(CouleurJoueur, JoueurAdverse),
+    findall(S, evaluerAdjacence(CouleurJoueur, S),ScoreJoueur),
+    sum(ScoreJoueur, ScoresJoueur),
+    findall(S, evaluerAdjacence(JoueurAdverse, S),ScoreAdverse),
+    sum(ScoreAdverse, ScoresAdverse),
+    ScoreAdjacence is (ScoresJoueur - (2 * ScoresAdverse)).
+piegeAdjacence(_, 0, _).  
+
+
+evaluerAdjacence(CouleurJoueur, ScoreJoueur):-
     caseTest(X,Y,CouleurJoueur),
-    Somme is 1.
+    calculerScoreAlignement(X, Y, CouleurJoueur, S),
+    ScoreJoueur is S.  
+  
+
+calculerScoreAjacence(X,Y, CouleurJoueur, Score ):-
+    evaluerLigne(X,Y,CouleurJoueur,LigneGauche1, LigneGauche2, LigneGauche3, LigneDroite1, LigneDroite2, LigneDroite3),
+    adjacence3(LigneGauche1, LigneGauche2, LigneGauche3, LigneDroite1, LigneDroite2, LigneDroite3, Score1),
+    adjacence2(LigneGauche1, LigneGauche2, LigneDroite1, LigneDroite2, Score2),
+    adjacence1(LigneGauche1, LigneDroite1, Score3),
+    Score is Score1 + Score2 + Score3.
+
+%_,x,x,x,_%
+adjacence3(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
+    (  
+        Droite1==1, Droite2==1, Droite3==0, Gauche1==0, Score is 1000;
+        Droite1==1, Droite2==0, Gauche1==1, Gauche2==0, Score is 1000;
+        Gauche1==1, Gauche2==1, Gauche3==0, Droite1==0, Score is 1000);
+    (Score is 0). 
+
+
+%_,x,x,_%
+adjacence2(Gauche1, Gauche2 , Droite1, Droite2 , Score):-
+    (  
+        Droite1==1, Droite2==0, Gauche1==0, Score is 120;
+        Gauche1==0, Droite1==0, Gauche2==0, Score is 120
+        );
+    (Score is 0).     
+
+%_,x,_%
+adjacence1(Gauche1, Droite1, Score):-
+    (  
+        Droite1==0, Gauche1==0, Score is 60
+        );
+    (Score is 0).  
