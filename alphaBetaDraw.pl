@@ -9,7 +9,7 @@
 
 %%% Code implémentant les algorithmes minimax et élagage alpha beta 
 
-:- module(minimaxdraw, [
+:- module(alphaBetaDraw, [
 	caseTest/3,
 	evaluate_and_choose/6,
 	minimax/5,

@@ -23,7 +23,7 @@
 	caseVide/2
 ]).
 
-:- use_module(minimaxdraw).
+:- use_module(alphaBetaDraw).
 
 %%%%%%%%%%%%%%%%
 %% Constantes %%

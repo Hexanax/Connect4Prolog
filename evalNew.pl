@@ -19,7 +19,7 @@
 :- use_module(util).
 :- use_module(jeu).
 :- use_module(ia).
-:- use_module(minimaxdraw).
+:- use_module(alphaBetaDraw).
 
 :- use_module(library(random)).
 
