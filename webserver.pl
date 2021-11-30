@@ -177,13 +177,13 @@ statutJeu(_,_,_, 'continue') :-
 obtenirCoup(_,2,Coup) :-
     iaAleatoire(Coup).
 
-%iaAlphabeta(JoueurCourant,Coup,Profondeur,PoidsPosition,PoidsAlignement,PoidsBlocage)
+%iaAlphabeta(JoueurCourant,Coup,Profondeur,PoidsCaseTableau,PoidsDefensif,PoidsOffensif,PoidsPiege,PoidsOpening)
 obtenirCoup(CouleurJCourant,3,Coup) :-
-    iaAlphabeta(CouleurJCourant,Coup,4,1,0,0,1,4).
+    iaAlphabeta(CouleurJCourant,Coup,4,3,4,2,1,5).
 obtenirCoup(CouleurJCourant,4,Coup) :-
     iaAlphabeta(CouleurJCourant,Coup,5,1,0,0,1,4).
 obtenirCoup(CouleurJCourant,5,Coup) :-
-    iaAlphabeta(CouleurJCourant,Coup,6,1,0,0,1,4).
+    iaAlphabeta(CouleurJCourant,Coup,6,3,4,2,1,5).
 %iaMinimaxOld(JoueurCourant,Coup,Profondeur,PoidsPosition,PoidsPuissance3,PoidsDensite,PoidsAdjacence) 
 obtenirCoup(CouleurJCourant,6,Coup) :-
     iaMinimaxOld(CouleurJCourant,Coup,4,1,1,0,0).

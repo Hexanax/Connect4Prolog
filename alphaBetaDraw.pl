@@ -250,8 +250,8 @@ eval(CouleurJoueur, Score):-
     piege7IA(CouleurJoueur, ScorePiege, PoidsPiege),
     opening(CouleurJoueur, ScoreOpening, PoidsOpening),
     forceColumnMove(CouleurJoueur, ScoreVictoire),
-    random_between(0, 0, Perturbation),
-	writefacts(1, 1),
+    random_between(-10, 10, Perturbation),
+	%writefacts(1, 1),
     Score is ScoreDefensif * PoidsDefensif
             %+ ScorePosition * PoidsCaseTableau
             + ScoreOffensif * PoidsOffensif
