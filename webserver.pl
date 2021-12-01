@@ -195,3 +195,5 @@ obtenirCoup(CouleurJCourant,7,Coup) :-
     iaMinimaxOld(CouleurJCourant,Coup,5,1,1,0,0).
 obtenirCoup(CouleurJCourant,8,Coup) :-
     iaMinimaxOld(CouleurJCourant,Coup,6,1,1,0,0).
+obtenirCoup(CouleurJCourant,9,Coup) :-
+    iaGreedy(Coup,CouleurJCourant).

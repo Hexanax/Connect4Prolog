@@ -55,7 +55,8 @@ typeJoueur(4,'IA Minimax 5 - eval Perso').
 typeJoueur(5,'IA Minimax 6 - eval Perso').
 typeJoueur(6,'IA Minimax old 4 - eval Old').
 typeJoueur(7,'IA Minimax old 5 - eval Old').
-typeJoueur(8,'IA Minimax old 6 - eval Old').
+typeJoueur(8,'IA Minimax old 8 - eval Old').
+typeJoueur(9,'IA Méthode Greedy').
 
 changerJoueur :-
 	joueurCourant(rouge,TypeJoueurR),

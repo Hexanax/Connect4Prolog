@@ -18,6 +18,7 @@
 
 
 :- module(ia, [iaAleatoire/1
+			  ,iaGreedy/2
 			  ,iaMinimaxOld/7
 			  ,poidsPuissance3/1
 			  ,poidsPosition/1
@@ -42,6 +43,7 @@
 :- use_module(util).
 :- use_module(alphaBetaDraw).
 :- use_module(miniMax).
+:- use_module(greedy).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Prédicats dynamiques %%
@@ -73,6 +75,11 @@ iaAleatoire(Coup) :-
 % AI Aléatoire a choisi une colonne pleine, donc on la fait recommencer.
 iaAleatoire(Coup) :-
 	iaAleatoire(Coup).
+
+% IA Greedy qui appelle l'algo glouton présent dans greedy.pl
+iaGreedy(Coup,JoueurCourant) :-
+	glouton(Coup,JoueurCourant).
+
 
 get_best((Move,_), Move).
 
