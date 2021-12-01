@@ -50,12 +50,12 @@
 % Définition des différentes IA.
 typeJoueur(1,'Humain').
 typeJoueur(2,'IA Aléatoire').
-typeJoueur(3,'IA Minimax 4 - eval Perso').
-typeJoueur(4,'IA Minimax 5 - eval Perso').
-typeJoueur(5,'IA Minimax 6 - eval Perso').
-typeJoueur(6,'IA Minimax old 4 - eval Old').
-typeJoueur(7,'IA Minimax old 5 - eval Old').
-typeJoueur(8,'IA Minimax old 8 - eval Old').
+typeJoueur(3,'IA Alphabeta3 dominante def').
+typeJoueur(4,'IA Alphabeta3 equilibree').
+typeJoueur(5,'IA Alphabeta3 dominante attaque').
+typeJoueur(6,'IA Minimax3 etalon').
+typeJoueur(7,'IA Minimax4 etalon').
+typeJoueur(8,'IA Minimax5 etalon').
 typeJoueur(9,'IA Méthode Greedy').
 
 changerJoueur :-
