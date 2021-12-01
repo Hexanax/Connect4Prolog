@@ -178,15 +178,19 @@ obtenirCoup(_,2,Coup) :-
 
 %iaAlphabeta(JoueurCourant,Coup,Profondeur,PoidsCaseTableau,PoidsDefensif,PoidsOffensif,PoidsPiege,PoidsOpening, PoidsAdjacence)
 obtenirCoup(CouleurJCourant,3,Coup) :-
-    iaAlphabeta(CouleurJCourant,Coup,3,1,10,10,1,1,2).
+    %Heuristique dominante défense
+    iaAlphabeta(CouleurJCourant,Coup,3,5,5,1,1,1,3).
 obtenirCoup(CouleurJCourant,4,Coup) :-
-    iaAlphabeta(CouleurJCourant,Coup,5,1,0,0,1,4,2).
+    %Heuristique équilibrée
+    iaAlphabeta(CouleurJCourant,Coup,3,4,4,6,5,1,5).
 obtenirCoup(CouleurJCourant,5,Coup) :-
-    iaAlphabeta(CouleurJCourant,Coup,6,3,4,2,1,5,2).
+    %Heuristique attaque
+    iaAlphabeta(CouleurJCourant,Coup,3,2,2,6,6,1,2). 
+
 %iaMinimaxOld(JoueurCourant,Coup,Profondeur,PoidsPosition,PoidsPuissance3,PoidsDensite,PoidsAdjacence) 
 obtenirCoup(CouleurJCourant,6,Coup) :-
-    iaMinimaxOld(CouleurJCourant,Coup,4,1,1,0,0).
+    iaMinimaxOld(CouleurJCourant,Coup,3,1,1,0,0).
 obtenirCoup(CouleurJCourant,7,Coup) :-
-    iaMinimaxOld(CouleurJCourant,Coup,5,1,1,0,0).
+    iaMinimaxOld(CouleurJCourant,Coup,4,1,1,0,0).
 obtenirCoup(CouleurJCourant,8,Coup) :-
-    iaMinimaxOld(CouleurJCourant,Coup,6,1,1,0,0).
+    iaMinimaxOld(CouleurJCourant,Coup,5,1,1,0,0).
