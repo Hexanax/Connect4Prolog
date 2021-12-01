@@ -51,7 +51,7 @@ for i in range(START_IA_ID,END_AI_ID + 1):
 bar.finish()
 print(lines)
 
-with open(f'testsIAs_script/resultat_test_{datetime.now()}.csv','w') as f:
+with open(f'testsIAs_script/test_results/resultat_test_{datetime.now()}.csv','w') as f:
 	for indice in lines:
 		f.write(lines[indice])
 		f.write('\n')
