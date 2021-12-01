@@ -1,19 +1,14 @@
-﻿/************* 
- * INSA Lyon - Département informatique - 4IF
- * Hexanôme : H4412
- * Rahim BELATECHE
- * Matheus DE BARROS SILVA
- * Benoit DELEGLISE
- * Allan GUIGAL
- * Alexis METWALLI
- * Matthieu ROUX
- * Mathieu SAUGIER
- ******************/
+﻿% - Emmanuel GARREAU
+% - Mathis GOICHON
+% - Yanis MANSOUR
+% - Bérenger MAYOUD--DUPIN
+% - Paul SOUTEYRAT
+% - Timothé VERSTRAETE
 
 %%%%%%%%%%%% webserver.pl %%%%%%%%%%%%
 
 %%% Ancien code basé sur la source : https://github.com/SIGSWAG/PrologPuissance4 %%%
-%%% Ajout à l'interface des nouvelles IA %%%
+%%% Modification légère pour intégrer l'appel des nouvelles IA %%%
 
 % Serveur web permettant d'interfacer Prolog avec notre IHM web.
 
@@ -183,7 +178,7 @@ obtenirCoup(_,2,Coup) :-
 
 %iaAlphabeta(JoueurCourant,Coup,Profondeur,PoidsCaseTableau,PoidsDefensif,PoidsOffensif,PoidsPiege,PoidsOpening, PoidsAdjacence)
 obtenirCoup(CouleurJCourant,3,Coup) :-
-    iaAlphabeta(CouleurJCourant,Coup,3,4,6,6,1,1,3).
+    iaAlphabeta(CouleurJCourant,Coup,3,1,10,10,1,1,2).
 obtenirCoup(CouleurJCourant,4,Coup) :-
     iaAlphabeta(CouleurJCourant,Coup,5,1,0,0,1,4,2).
 obtenirCoup(CouleurJCourant,5,Coup) :-
