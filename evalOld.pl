@@ -13,7 +13,7 @@
 
 %%% Ancien code basé sur la source : https://github.com/SIGSWAG/PrologPuissance4 %%% 
 /*
-Renomé par :
+Renomé entièrement par :
 % - Emmanuel GARREAU
 % - Mathis GOICHON
 % - Yanis MANSOUR

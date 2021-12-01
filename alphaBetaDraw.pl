@@ -13,6 +13,7 @@
 %%%%%%%%%%%% alphaBetaDraw.pl %%%%%%%%%%%%
 
 %%% Code implémentant les algorithmes minimax et élagage alpha beta réalisé dans la source : https://github.com/PeredurOmega/PrologPuissance4
+%%% Nous n'utilisons pas leur min max.
 %%% Code implémentant les heuristics que nous avons développé
 %%% Une version de notre tentative d'implémentation de l'algorithme alpha beta est également disponible. Il est basé sur le code : https://github.com/PascalPons/connect4/blob/part4/solver.cpp
 %%% et : https://ai.ia.agh.edu.pl/pl:prolog:pllib:minimax_move
@@ -174,10 +175,15 @@ value(InitPlayer, V) :-
 	V is Score.
 
 
-%%%%%% Notre version du alphaBeta
+%%%%%% Notre version du alphaBeta basé sur  les codes : https://github.com/PascalPons/connect4/blob/part4/solver.cpp
+%%%%%% et : https://ai.ia.agh.edu.pl/pl:prolog:pllib:minimax_move
+%%%%%% L'implémentation provoque une erreur d'évaluation dans le cas ou le score est issue d'un appel récusrif 
+%%%%%% à la profondeur 0 -> les ia sont donc moins performante. 
+%%%%%% L'utilisation de la pondaration comme dans le projet : https://github.com/PeredurOmega/PrologPuissance4
+%%%%%% permet de résoudre cette erreur. Nous avons donc utilisé directement leur algo.
 /*
 alphaBeta(0,CouleurJoueur,Alpha,Beta , Move, Value,Maximizer):- 
-    evaluate(CouleurJoueur, Value, Move), !.
+    evaluate(Maximizer, Value, Move), !.
 
 alphaBeta(Profondeur, CouleurJoueur, Alpha, Beta, Move, Value, Maximizer):- 
     Profondeur > 0,
