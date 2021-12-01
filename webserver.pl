@@ -179,7 +179,7 @@ obtenirCoup(_,2,Coup) :-
 
 %iaAlphabeta(JoueurCourant,Coup,Profondeur,PoidsCaseTableau,PoidsDefensif,PoidsOffensif,PoidsPiege,PoidsOpening, PoidsAdjacence)
 obtenirCoup(CouleurJCourant,3,Coup) :-
-    iaAlphabeta(CouleurJCourant,Coup,4,3,4,2,1,5,2).
+    iaAlphabeta(CouleurJCourant,Coup,3,4,6,6,1,1,3).
 obtenirCoup(CouleurJCourant,4,Coup) :-
     iaAlphabeta(CouleurJCourant,Coup,5,1,0,0,1,4,2).
 obtenirCoup(CouleurJCourant,5,Coup) :-

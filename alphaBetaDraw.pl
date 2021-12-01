@@ -251,7 +251,7 @@ eval(CouleurJoueur, Score):-
     piege7IA(CouleurJoueur, ScorePiege, PoidsPiege),
     piegeAdjacence(CouleurJoueur, ScoreAdjacence, PoidsAdjacence),
     opening(CouleurJoueur, ScoreOpening, PoidsOpening),
-    random_between(0, 0, Perturbation),
+    random_between(-5, 5, Perturbation),
     ScoreFinal is ScoreDefensif * PoidsDefensif
             + ScorePosition * PoidsCaseTableau
             + ScoreOffensif * PoidsOffensif
@@ -389,25 +389,25 @@ align4Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
 %_,x,x,x%
 align3Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, _, Score):-
     (  
-        Gauche1==0, Droite1==1, Droite2==1, Score is 100;
-        Gauche1==1, Gauche2==0, Droite1==1, Score is 100;
-        Gauche1==1, Gauche2==1, Gauche3==0, Score is 100);
+        Gauche1==0, Droite1==1, Droite2==1, Score is 200;
+        Gauche1==1, Gauche2==0, Droite1==1, Score is 200;
+        Gauche1==1, Gauche2==1, Gauche3==0, Score is 200);
     (Score is 0).
 
 %x,_,x,x%
 align3Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
     (  
-        Droite1==0, Droite2==1, Droite3==1, Score is 100;
-        Gauche1==0, Gauche2==1, Droite1==1, Score is 100;
-        Gauche1==1, Gauche2==0, Gauche3==1, Score is 100);
+        Droite1==0, Droite2==1, Droite3==1, Score is 200;
+        Gauche1==0, Gauche2==1, Droite1==1, Score is 200;
+        Gauche1==1, Gauche2==0, Gauche3==1, Score is 200);
     (Score is 0).    
 
 %x,x,_,x%
 align3Pions(Gauche1, Gauche2, Gauche3, Droite1, Droite2, Droite3, Score):-
     (  
-        Droite1==1, Droite2==0, Droite3==1, Score is 100;
-        Gauche1==1, Droite1==0, Droite2==1, Score is 100;
-        Gauche1==0, Gauche2==1, Gauche3==1, Score is 100);
+        Droite1==1, Droite2==0, Droite3==1, Score is 200;
+        Gauche1==1, Droite1==0, Droite2==1, Score is 200;
+        Gauche1==0, Gauche2==1, Gauche3==1, Score is 200);
     (Score is 0).
 
 %x,x,x,_%
