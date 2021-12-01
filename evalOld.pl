@@ -1,13 +1,30 @@
+/************* 
+ * INSA Lyon - Département informatique - 4IF
+ * Hexanôme : H4412
+ * Rahim BELATECHE
+ * Matheus DE BARROS SILVA
+ * Benoit DELEGLISE
+ * Allan GUIGAL
+ * Alexis METWALLI
+ * Matthieu ROUX
+ * Mathieu SAUGIER
+ ******************/
+%%%%%%%%%%%% evalOld.pl %%%%%%%%%%%%
+
+%%% Ancien code basé sur la source : https://github.com/SIGSWAG/PrologPuissance4 %%% 
+/*
+Renomé entièrement par :
 % - Emmanuel GARREAU
 % - Mathis GOICHON
 % - Yanis MANSOUR
 % - Bérenger MAYOUD--DUPIN
 % - Paul SOUTEYRAT
 % - Timothé VERSTRAETE
+Dans la source : 
+https://github.com/PeredurOmega/PrologPuissance4
+*/
 
-%%%%%%%%%%%% evalOld.pl %%%%%%%%%%%%
 
-%%% Ancien code basé sur la source : https://github.com/SIGSWAG/PrologPuissance4 %%%
 %%% Code non utilisé dans notre solution sauf pour jouer contre afin de tester nos IA %%%
 
 % Différentes fonctions d'évaluation pour le Puissance 4, toutes basées sur des heuristiques différentes.

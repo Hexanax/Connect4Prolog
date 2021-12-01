@@ -1,15 +1,30 @@
-﻿% - Emmanuel GARREAU
-% - Mathis GOICHON
-% - Yanis MANSOUR
-% - Bérenger MAYOUD--DUPIN
-% - Paul SOUTEYRAT
-% - Timothé VERSTRAETE
+﻿/************* 
+ * INSA Lyon - Département informatique - 4IF
+ * Hexanôme : H4412
+ * Rahim BELATECHE
+ * Matheus DE BARROS SILVA
+ * Benoit DELEGLISE
+ * Allan GUIGAL
+ * Alexis METWALLI
+ * Matthieu ROUX
+ * Mathieu SAUGIER
+ ******************/
 
 %%%%%%%%%%%% miniMax.pl %%%%%%%%%%%%
 
 %%% Ancien code basé sur la source : https://github.com/SIGSWAG/PrologPuissance4 %%%
 %%% Code non utilisé dans notre solution sauf pour jouer contre afin de tester nos IA %%%
-
+/*
+Renomé entièrement par :
+% - Emmanuel GARREAU
+% - Mathis GOICHON
+% - Yanis MANSOUR
+% - Bérenger MAYOUD--DUPIN
+% - Paul SOUTEYRAT
+% - Timothé VERSTRAETE
+Dans la source : 
+https://github.com/PeredurOmega/PrologPuissance4
+*/
 % Implémentation de minimax avec diverses optimisations propres au Puissance 4.
 
 :- module(miniMax, [parcoursArbre/4, caseTestOld/3, gagneTest/4]).
