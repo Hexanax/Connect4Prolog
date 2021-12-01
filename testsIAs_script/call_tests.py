@@ -41,7 +41,11 @@ def run_tests(firstAI, secondAI, nbIter):
 # Minimax 4 Perso vs Minimax 4 old
 # run_tests(3,6,20)
 # Minimax6 Perso vs Minimax4 perso
-run_tests(6,5,10)
+while (1==1):
+    try:
+        run_tests(6,3,10)
+    except Exception as e:
+        print(e)
 # Minimax4 evalPos+Puissance3 vs Minimax3 evalPos+Puissance3
 # run_tests(5,3,10)
 
