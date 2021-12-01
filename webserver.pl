@@ -189,33 +189,33 @@ obtenirCoup(CouleurJCourant,5,Coup) :-
     iaAlphabeta(CouleurJCourant,Coup,3,2,2,6,6,1,2).
     
 %Profondeur 4
-obtenirCoup(CouleurJCourant,4,Coup) :-
+obtenirCoup(CouleurJCourant,6,Coup) :-
     %Heuristique dominante défense
     iaAlphabeta(CouleurJCourant,Coup,4,5,5,1,1,1,3).
-obtenirCoup(CouleurJCourant,5,Coup) :-
+obtenirCoup(CouleurJCourant,7,Coup) :-
     %Heuristique équilibrée
     iaAlphabeta(CouleurJCourant,Coup,4,4,4,6,5,1,5).
-obtenirCoup(CouleurJCourant,6,Coup) :-
+obtenirCoup(CouleurJCourant,8,Coup) :-
     %Heuristique attaque
     iaAlphabeta(CouleurJCourant,Coup,4,2,2,6,6,1,2).
     
 %Profondeur 5
-obtenirCoup(CouleurJCourant,7,Coup) :-
+obtenirCoup(CouleurJCourant,9,Coup) :-
     %Heuristique dominante défense
     iaAlphabeta(CouleurJCourant,Coup,5,5,5,1,1,1,3).
-obtenirCoup(CouleurJCourant,8,Coup) :-
+obtenirCoup(CouleurJCourant,10,Coup) :-
     %Heuristique équilibrée
     iaAlphabeta(CouleurJCourant,Coup,5,4,4,6,5,1,5).
-obtenirCoup(CouleurJCourant,9,Coup) :-
+obtenirCoup(CouleurJCourant,11,Coup) :-
     %Heuristique attaque
     iaAlphabeta(CouleurJCourant,Coup,5,2,2,6,6,1,2).
 
 %iaMinimaxOld(JoueurCourant,Coup,Profondeur,PoidsPosition,PoidsPuissance3,PoidsDensite,PoidsAdjacence) 
-obtenirCoup(CouleurJCourant,10,Coup) :-
-    iaMinimaxOld(CouleurJCourant,Coup,3,1,1,0,0).
-obtenirCoup(CouleurJCourant,11,Coup) :-
-    iaMinimaxOld(CouleurJCourant,Coup,4,1,1,0,0).
 obtenirCoup(CouleurJCourant,12,Coup) :-
-    iaMinimaxOld(CouleurJCourant,Coup,5,1,1,0,0).
+    iaMinimaxOld(CouleurJCourant,Coup,3,1,1,0,0).
 obtenirCoup(CouleurJCourant,13,Coup) :-
+    iaMinimaxOld(CouleurJCourant,Coup,4,1,1,0,0).
+obtenirCoup(CouleurJCourant,14,Coup) :-
+    iaMinimaxOld(CouleurJCourant,Coup,5,1,1,0,0).
+obtenirCoup(CouleurJCourant,15,Coup) :-
     iaGreedy(Coup,CouleurJCourant).
