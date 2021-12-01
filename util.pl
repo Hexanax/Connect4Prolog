@@ -12,7 +12,7 @@
 
 
 %%%%%%%%%%%% util.pl %%%%%%%%%%%%
-% Ancien code basé sur la source : https://github.com/SIGSWAG/PrologPuissance4 %
+% Ancien code basé sur la source : https://github.com/SIGSWAG/PrologPuissance4 et légèrement modifié dans la source https://github.com/PeredurOmega/PrologPuissance4%
 % Différents prédicats d'utilité publique.
 
 :- module(util, [
