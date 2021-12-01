@@ -39,7 +39,11 @@ typeJoueur(5,'IA Minimax 4 - eval Position').
 typeJoueur(6,'IA Minimax 4 - eval Position+Puissance3').
 typeJoueur(7,'IA Minimax 5 - eval Position').
 typeJoueur(8,'IA Minimax 5 - eval Position+Puissance3').
-typeJoueur(9, 'IA Candidat Position').
+typeJoueur(9, 'Position Defaut').
+typeJoueur(10, 'Position Strat 1').
+typeJoueur(11, 'Position Strat 2').
+typeJoueur(12, 'Position Strat 3').
+typeJoueur(13, 'Position Strat 4').
 
 changerJoueur :-
 	joueurCourant(rouge,TypeJoueurR),

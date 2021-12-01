@@ -5,13 +5,12 @@
 % - "Minimax - Candidat", implémentation de minimax en test.
 :- module(ia,
           [ iaAleatoire/1,
-            iaMinimax/7,
-            iaMinimaxCandidat/7,
+            iaMinimax/8,
             poidsPuissance3/1,
             poidsPosition/1,
             poidsDensite/1,
             poidsAdjacence/1,
-            startPosition/1
+            positionStrategy/1
           ]).
 
 %%%%%%%%%%%%%%%%
@@ -30,7 +29,7 @@
 :- dynamic poidsPosition/1.
 :- dynamic poidsDensite/1.
 :- dynamic poidsAdjacence/1.
-:- (dynamic startPosition/1).
+:- (dynamic positionStrategy/1).
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %% Prédicats publics %%
@@ -44,17 +43,8 @@ iaAleatoire(Coup) :-
 iaAleatoire(Coup) :-
 	iaAleatoire(Coup).
 
-iaMinimax(JoueurCourant, Coup, Profondeur, PoidsPosition, PoidsPuissance3, PoidsDensite, PoidsAdjacence) :-
-    assert(startPosition(0)),
-    retract(startPosition(0)),
-    assert(poidsPosition(PoidsPosition)),
-    assert(poidsPuissance3(PoidsPuissance3)),
-    assert(poidsDensite(PoidsDensite)),
-    assert(poidsAdjacence(PoidsAdjacence)),
-    parcoursArbre(JoueurCourant, Profondeur, Coup, _).
-iaMinimaxCandidat(JoueurCourant, Coup, Profondeur, PoidsPosition, PoidsPuissance3, PoidsDensite, PoidsAdjacence) :-
-    assert(startPosition(1)),
-    retract(startPosition(1)),
+iaMinimax(JoueurCourant, Coup, Profondeur, PoidsPosition, PoidsPuissance3, PoidsDensite, PoidsAdjacence, PositionStrat) :-
+    assert(positionStrategy(PositionStrat)),
     assert(poidsPosition(PoidsPosition)),
     assert(poidsPuissance3(PoidsPuissance3)),
     assert(poidsDensite(PoidsDensite)),

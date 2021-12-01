@@ -69,9 +69,10 @@ evalCase(X, Y, Courant, ScoreCase) :-
     nbLignes(NBLIGNES),
     ponderationJ(X, Y, Courant, PonderationJoueur),
 	%%%%% Option par defaut, le centre du tableau = mieux %%%%%
-    (   startPosition(0)
+    (   positionStrategy==0
     ->  CentreX is NBCOLONNES//2+1,
         CentreY is NBLIGNES//2+1,
+        write(positionStrategy),
         Dx is X-CentreX,
         Dy is Y-CentreY,
         abs(Dx, AbsX),
@@ -79,15 +80,15 @@ evalCase(X, Y, Courant, ScoreCase) :-
         ScoreCase is (200/(AbsX+1)+200/(AbsY+1))*PonderationJoueur
     ; 
 	%%%%% Option 1, le centre-bas du tableau = mieux %%%%%
-   startPosition(1)
+   positionStrategy==1
     ->  CentreX is NBCOLONNES//2+1,
         Dx is X-CentreX,
         Dy is Y,
+        write(positionStrategy),
         abs(Dx, AbsX),
         abs(Dy, AbsY),
         ScoreCase is (200/(AbsX+1)+200/(AbsY+1))*PonderationJoueur
-	%%%%% Option 2, le centre-haut du tableau = mieux %%%%%
-    ;   startPosition(2)
+    ;   positionStrategy==2
     ->  CentreX is NBCOLONNES//2+1,
         CentreY is NBLIGNES,
         Dx is X-CentreX,
@@ -95,8 +96,7 @@ evalCase(X, Y, Courant, ScoreCase) :-
         abs(Dx, AbsX),
         abs(Dy, AbsY),
         ScoreCase is (200/(AbsX+1)+200/(AbsY+1))*PonderationJoueur
-		%%%%% Option 3, le centre-bas du tableau = BEAUCOUP mieux %%%%%
-    ;   startPosition(3)
+    ;   positionStrategy==3
     ->  CentreX is NBCOLONNES//2+1,
         CentreY is NBLIGNES//2+1,
         Dx is X-CentreX,
@@ -104,7 +104,6 @@ evalCase(X, Y, Courant, ScoreCase) :-
         abs(Dx, AbsX),
         abs(Dy, AbsY),
         ScoreCase is (200/((AbsX+1)*(AbsX+1))+200/((AbsY+1)*(AbsY+1)))*PonderationJoueur
-		%%%%% Option 4, le centre-bas du tableau = UN PEU mieux %%%%%
     ;   CentreX is NBCOLONNES//2+1,
         CentreY is NBLIGNES//2+1,
         Dx is X-CentreX,

@@ -166,18 +166,27 @@ statutJeu(_,_,_, 'continue') :-
 obtenirCoup(_,2,Coup) :-
     iaAleatoire(Coup).
 
-obtenirCoup(CouleurJCourant,3,Coup) :-
+obtenirCoup(CouleurJCourant, 3, Coup) :-
     % iaMinimax(JoueurCourant,Coup,Profondeur,PoidsPosition,PoidsPuissance3,PoidsDensite,PoidsAdjacence)
-    iaMinimax(CouleurJCourant,Coup,3,1,0,0,0).
+    iaMinimax(CouleurJCourant, Coup, 3, 1, 0, 0, 0, 0).
 obtenirCoup(CouleurJCourant, 4, Coup) :-
-    iaMinimax(CouleurJCourant, Coup, 3, 1, 1, 0, 0).
-obtenirCoup(CouleurJCourant,5,Coup) :-
-    iaMinimax(CouleurJCourant,Coup,4,1,0,0,0).
-obtenirCoup(CouleurJCourant,6,Coup) :-
-    iaMinimax(CouleurJCourant,Coup,4,1,1,0,0).
-obtenirCoup(CouleurJCourant,7,Coup) :-
-    iaMinimax(CouleurJCourant,Coup,5,1,1,0,0).
-obtenirCoup(CouleurJCourant,8,Coup) :-
-    iaMinimax(CouleurJCourant,Coup,5,1,1,0,0).
+    iaMinimax(CouleurJCourant, Coup, 3, 1, 1, 0, 0, 0).
+obtenirCoup(CouleurJCourant, 5, Coup) :-
+    iaMinimax(CouleurJCourant, Coup, 4, 1, 0, 0, 0, 0).
+obtenirCoup(CouleurJCourant, 6, Coup) :-
+    iaMinimax(CouleurJCourant, Coup, 4, 1, 1, 0, 0, 0).
+obtenirCoup(CouleurJCourant, 7, Coup) :-
+    iaMinimax(CouleurJCourant, Coup, 5, 1, 1, 0, 0, 0).
+obtenirCoup(CouleurJCourant, 8, Coup) :-
+    iaMinimax(CouleurJCourant, Coup, 5, 1, 1, 0, 0, 0).
 obtenirCoup(CouleurJCourant, 9, Coup) :-
-    iaMinimaxCandidat(CouleurJCourant, Coup, 3, 1, 0, 0, 0).
+    iaMinimax(CouleurJCourant, Coup, 3, 1, 0, 0, 0, 0).
+obtenirCoup(CouleurJCourant, 10, Coup) :-
+    iaMinimax(CouleurJCourant, Coup, 3, 1, 0, 0, 0, 1).
+obtenirCoup(CouleurJCourant, 11, Coup) :-
+    iaMinimax(CouleurJCourant, Coup, 3, 1, 0, 0, 0, 2).
+obtenirCoup(CouleurJCourant, 12, Coup) :-
+    iaMinimax(CouleurJCourant, Coup, 3, 1, 0, 0, 0, 3).
+obtenirCoup(CouleurJCourant, 13, Coup) :-
+    iaMinimax(CouleurJCourant, Coup, 3, 1, 0, 0, 0, 4).
+
