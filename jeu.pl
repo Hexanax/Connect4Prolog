@@ -56,6 +56,7 @@ typeJoueur(5,'IA Alphabeta3 dominante attaque').
 typeJoueur(6,'IA Minimax3 etalon').
 typeJoueur(7,'IA Minimax4 etalon').
 typeJoueur(8,'IA Minimax5 etalon').
+typeJoueur(9,'IA Méthode Greedy').
 
 changerJoueur :-
 	joueurCourant(rouge,TypeJoueurR),
