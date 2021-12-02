@@ -212,10 +212,10 @@ obtenirCoup(CouleurJCourant,11,Coup) :-
 
 %iaMinimaxOld(JoueurCourant,Coup,Profondeur,PoidsPosition,PoidsPuissance3,PoidsDensite,PoidsAdjacence) 
 obtenirCoup(CouleurJCourant,12,Coup) :-
-    iaMinimaxOld(CouleurJCourant,Coup,3,1,1,0,0).
+    iaMinimaxOld(CouleurJCourant,Coup,3,1,1,0,0,0).
 obtenirCoup(CouleurJCourant,13,Coup) :-
-    iaMinimaxOld(CouleurJCourant,Coup,4,1,1,0,0).
+    iaMinimaxOld(CouleurJCourant,Coup,4,1,1,0,0,0).
 obtenirCoup(CouleurJCourant,14,Coup) :-
-    iaMinimaxOld(CouleurJCourant,Coup,5,1,1,0,0).
+    iaMinimaxOld(CouleurJCourant,Coup,5,1,1,0,0,0).
 obtenirCoup(CouleurJCourant,15,Coup) :-
     iaGreedy(Coup,CouleurJCourant).

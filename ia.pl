@@ -15,25 +15,25 @@
 %%% Code permettant d'appeler les différentes IA %%% 
 %%% iaMinimaxOld impémente l'algo du même nom. Il est issu de la source : https://github.com/SIGSWAG/PrologPuissance4. Nous n'y avons apporté aucune modification.
 %%% iaAlphabeta implémente un alpha beta pruning. Il a été développé dans la source : https://github.com/SIGSWAG/PrologPuissance4. Nous y avons simplement ajouté nos heuristics
-
-
-:- module(ia, [iaAleatoire/1
-			  ,iaGreedy/2
-			  ,iaMinimaxOld/7
-			  ,poidsPuissance3/1
-			  ,poidsPosition/1
-			  ,poidsDensite/1
-			  ,poidsAdjacence/1
-			  ,initDepth/1
-			  ,ennemiTest/1
-			  ,iaAlphabeta/9
-			  ,poidsDefensif/1
-			  ,poidsOffensif/1
-			  ,poidsCaseTableau/1
-			  ,poidsPiegeSept/1
-			  ,poidsOpening/1
-			  ,poidsPiegeAdjacence/1]
-).
+:- module(ia,
+          [ iaAleatoire/1,
+            iaGreedy/2,
+            iaMinimaxOld/8,
+            poidsPuissance3/1,
+            poidsPosition/1,
+            poidsDensite/1,
+            poidsAdjacence/1,
+            initDepth/1,
+            ennemiTest/1,
+            iaAlphabeta/9,
+            poidsDefensif/1,
+            poidsOffensif/1,
+            poidsCaseTableau/1,
+            poidsPiegeSept/1,
+            poidsOpening/1,
+            positionStrategy/1,
+            poidsPiegeAdjacence/1
+          ]).
 
 %%%%%%%%%%%%%%%%
 %% Inclusions %%
@@ -63,6 +63,7 @@
 :- dynamic poidsPiegeSept/1.
 :- dynamic poidsOpening/1.
 :- dynamic poidsPiegeAdjacence/1.
+:- (dynamic positionStrategy/1).
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %% Prédicats publics %%
@@ -111,9 +112,10 @@ iaAlphabeta(JoueurCourant,Coup,Profondeur,PoidsCaseTableau,PoidsDefensif,PoidsOf
 /**
  * iaMinimaxOld implémente l'algo du même nom. Il est issu de la source : https://github.com/SIGSWAG/PrologPuissance4. Nous n'y avons apporté aucune modification.
  * */
-iaMinimaxOld(JoueurCourant,Coup,Profondeur,PoidsPosition,PoidsPuissance3,PoidsDensite,PoidsAdjacence) :-
-		assert(poidsPosition(PoidsPosition)),
-		assert(poidsPuissance3(PoidsPuissance3)),
-		assert(poidsDensite(PoidsDensite)),
-		assert(poidsAdjacence(PoidsAdjacence)),
-		parcoursArbre(JoueurCourant,Profondeur,Coup,_).
+iaMinimaxOld(JoueurCourant, Coup, Profondeur, PoidsPosition, PoidsPuissance3, PoidsDensite, PoidsAdjacence, PositionStrat) :-
+    assert(positionStrategy(PositionStrat)),
+    assert(poidsPosition(PoidsPosition)),
+    assert(poidsPuissance3(PoidsPuissance3)),
+    assert(poidsDensite(PoidsDensite)),
+    assert(poidsAdjacence(PoidsAdjacence)),
+    parcoursArbre(JoueurCourant, Profondeur, Coup, _).
