@@ -41,7 +41,7 @@ Nous vous conseillons de faire tourner le programme à l'aide de WSL. Vous pouve
 
 **Projet de base**: [SIGSWAG/PrologPuissance4](https://github.com/SIGSWAG/PrologPuissance4)
 
-**Inspiration alpha beta utilisé** : [PeredurOmega/PrologPuissance4](https://github.com/PeredurOmega/PrologPuissance4)
+**Alpha beta utilisé** : [PeredurOmega/PrologPuissance4](https://github.com/PeredurOmega/PrologPuissance4)
 
 **Inspiration alpha beta implémentation** :
 - [PascalPons/connect4](https://github.com/PascalPons/connect4/blob/part4/solver.cpp)
