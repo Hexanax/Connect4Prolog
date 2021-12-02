@@ -26,10 +26,13 @@ https://github.com/PeredurOmega/PrologPuissance4
 
 
 %%% Code non utilisé dans notre solution sauf pour jouer contre afin de tester nos IA %%%
+%%% Nouvele heursitique de positions sont proposees dans evalCasesOld %%%
 
 % Différentes fonctions d'évaluation pour le Puissance 4, toutes basées sur des heuristiques différentes.
-
-:- module(evalOld, [evalJeuOld/5, caseVideTestOld/2]).
+:- module(evalOld,
+          [ evalJeuOld/5,
+            caseVideTestOld/2
+          ]).
 
 %%%%%%%%%%%%%%%%
 %% Inclusions %%
@@ -92,17 +95,54 @@ evalCasesOld(Courant,ScoreCase) :-
 	evalCaseOld(X,Y,Courant,ScoreCase).
 
 % renvoie un score entre -400 et 400
-evalCaseOld(X,Y,Courant,ScoreCase) :-
+evalCaseOld(X, Y, Courant, ScoreCase) :-
 	nbColonnes(NBCOLONNES),
 	nbLignes(NBLIGNES),
 	ponderationJ(X, Y, Courant, PonderationJoueur),
-	CentreX is NBCOLONNES // 2 + 1,
-	CentreY is NBLIGNES // 2 + 1,
-	Dx is X - CentreX,
-	Dy is Y - CentreY,
-	abs(Dx,AbsX),
-	abs(Dy,AbsY),
-	ScoreCase is ( 200/(AbsX+1) + 200/(AbsY+1) )*PonderationJoueur.
+	%%%%% Option par defaut, le centre du tableau = mieux %%%%%
+	(   positionStrategy==0
+	->  CentreX is NBCOLONNES//2+1,
+		CentreY is NBLIGNES//2+1,
+		write(positionStrategy),
+		Dx is X-CentreX,
+		Dy is Y-CentreY,
+		abs(Dx, AbsX),
+		abs(Dy, AbsY),
+		ScoreCase is (200/(AbsX+1)+200/(AbsY+1))*PonderationJoueur
+	; 
+	%%%%% Option 1, le centre-bas du tableau = mieux %%%%%
+	positionStrategy==1
+	->  CentreX is NBCOLONNES//2+1,
+		Dx is X-CentreX,
+		Dy is Y,
+		write(positionStrategy),
+		abs(Dx, AbsX),
+		abs(Dy, AbsY),
+		ScoreCase is (200/(AbsX+1)+200/(AbsY+1))*PonderationJoueur
+	;   positionStrategy==2
+	->  CentreX is NBCOLONNES//2+1,
+		CentreY is NBLIGNES,
+		Dx is X-CentreX,
+		Dy is Y-CentreY,
+		abs(Dx, AbsX),
+		abs(Dy, AbsY),
+		ScoreCase is (200/(AbsX+1)+200/(AbsY+1))*PonderationJoueur
+	;   positionStrategy==3
+	->  CentreX is NBCOLONNES//2+1,
+		CentreY is NBLIGNES//2+1,
+		Dx is X-CentreX,
+		Dy is Y-CentreY,
+		abs(Dx, AbsX),
+		abs(Dy, AbsY),
+		ScoreCase is (200/((AbsX+1)*(AbsX+1))+200/((AbsY+1)*(AbsY+1)))*PonderationJoueur
+	;   CentreX is NBCOLONNES//2+1,
+		CentreY is NBLIGNES//2+1,
+		Dx is X-CentreX,
+		Dy is Y-CentreY,
+		abs(Dx, AbsX),
+		abs(Dy, AbsY),
+		ScoreCase is (200/sqrt(AbsX+1)+200/sqrt(AbsY+1))*PonderationJoueur
+	).
 
 ponderationJ(X,Y, Courant,1) :-
 	caseTestOld(X,Y,Courant), !.

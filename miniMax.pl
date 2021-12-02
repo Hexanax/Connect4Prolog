@@ -14,6 +14,7 @@
 
 %%% Ancien code basé sur la source : https://github.com/SIGSWAG/PrologPuissance4 %%%
 %%% Code non utilisé dans notre solution sauf pour jouer contre afin de tester nos IA %%%
+%%% Nouvele heursitique de positions sont proposees dans evalcase
 /*
 Renomé entièrement par :
 % - Emmanuel GARREAU
@@ -26,8 +27,11 @@ Dans la source :
 https://github.com/PeredurOmega/PrologPuissance4
 */
 % Implémentation de minimax avec diverses optimisations propres au Puissance 4.
-
-:- module(miniMax, [parcoursArbre/4, caseTestOld/3, gagneTest/4]).
+:- module(miniMax,
+          [ parcoursArbre/4,
+            caseTestOld/3,
+            gagneTest/4
+          ]).
 
 %%%%%%%%%%%%%%%%
 %% Inclusions %%
