@@ -53,10 +53,16 @@ typeJoueur(2,'IA Aléatoire').
 typeJoueur(3,'IA Alphabeta3 dominante def').
 typeJoueur(4,'IA Alphabeta3 equilibree').
 typeJoueur(5,'IA Alphabeta3 dominante attaque').
-typeJoueur(6,'IA Minimax3 etalon').
-typeJoueur(7,'IA Minimax4 etalon').
-typeJoueur(8,'IA Minimax5 etalon').
-typeJoueur(9,'IA Méthode Greedy').
+typeJoueur(6,'IA Alphabeta4 dominante def').
+typeJoueur(7,'IA Alphabeta4 equilibree').
+typeJoueur(8,'IA Alphabeta4 dominante attaque').
+typeJoueur(9,'IA Alphabeta5 dominante def').
+typeJoueur(10,'IA Alphabeta5 equilibree').
+typeJoueur(11,'IA Alphabeta5 dominante attaque').
+typeJoueur(12,'IA Minimax3 etalon').
+typeJoueur(13,'IA Minimax4 etalon').
+typeJoueur(14,'IA Minimax5 etalon').
+typeJoueur(15,'IA Méthode Greedy').
 
 changerJoueur :-
 	joueurCourant(rouge,TypeJoueurR),
