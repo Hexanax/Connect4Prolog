@@ -26,10 +26,13 @@ https://github.com/PeredurOmega/PrologPuissance4
 
 
 %%% Code non utilisé dans notre solution sauf pour jouer contre afin de tester nos IA %%%
+%%% Nouvele heursitique de positions sont proposees dans evalCasesOld %%%
 
 % Différentes fonctions d'évaluation pour le Puissance 4, toutes basées sur des heuristiques différentes.
-
-:- module(evalOld, [evalJeuOld/5, caseVideTestOld/2]).
+:- module(evalOld,
+          [ evalJeuOld/5,
+            caseVideTestOld/2
+          ]).
 
 %%%%%%%%%%%%%%%%
 %% Inclusions %%
