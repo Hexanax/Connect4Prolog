@@ -46,6 +46,6 @@ Nous vous conseillons de faire tourner le programme à l'aide de WSL. Vous pouve
 **Inspiration alpha beta implémentation** :
 - [PascalPons/connect4](https://github.com/PascalPons/connect4/blob/part4/solver.cpp)
 - [pl:prolog:pllib:minimax_move](https://ai.ia.agh.edu.pl/pl:prolog:pllib:minimax_move)
-- 
+
 ## Les sources
 Les fichiers sources sont séparés en deux parties : les prédicats "publics" (exportés par le module) et les prédicats "privés". Tandis que nous avons essayés de converser les prédicats publics très homogènes pour des raisons d'interfaçage et de partage du travail, les prédicats privés sont plus organisés selon le bon vouloir de chacun.
