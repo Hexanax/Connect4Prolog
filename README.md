@@ -1,8 +1,7 @@
 # PrologPuissance4
 Projet Prolog - Jeu du puissance 4 dans le cadre du cours d'Approche logique de l’Intelligence Artificielle à l'INSA Lyon.
 
-![image](https://user-images.githubusercontent.com/36091631/144425789-c81eab37-f7e7-4146-9dd9-106e06f049e2.png)
-
+![capture](https://user-images.githubusercontent.com/36091631/144427923-8ea6eb58-6d42-4120-bcb1-74a9917f047f.gif)
 
 ## Lancer l'application 
 ### Sur linux
